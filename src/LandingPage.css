@@ -1,0 +1,183 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-left: 150px;
+}
+
+.plan-highlight {
+  color: #00b894;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+  margin-right: 150px;
+}
+
+.signup-button,
+.login-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.signup-button {
+  background-color: #00b894;
+  color: white;
+}
+
+.login-button {
+  background-color: white;
+  color: #00b894;
+  border: 2px solid #00b894;
+}
+
+.main-section {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 60px;
+  gap: 100px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  margin-left: -190px;
+  font-size: 75px;
+  margin-top: -30px;
+}
+
+.content p {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.expense-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 30px; 
+  border-radius: 10px;
+  max-width: 550px; 
+  margin: 0 0 0 50px; 
+  margin-left: -190px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px; 
+}
+
+.amount {
+  font-size: 2rem; 
+}
+
+.expenses {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+}
+
+.expenses li {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #ddd;
+  padding: 15px 0; 
+}
+
+.expenses li:first-child {
+  border-top: none;
+}
+
+.left-text {
+  font-size: 1.2rem; 
+}
+
+.right-amount {
+  font-size: 1.3rem; 
+}
+
+.illustration {
+  flex: 1;
+  transform: translateX(80px);
+  text-align: center;
+}
+
+.image {
+  position: absolute;
+  top: -30px;
+  left: 50px; 
+  width: 750px;
+  height: auto;
+}
+
+
+.illustration h3 {
+  margin-top: 20px;
+  font-size: 1.8rem;
+}
+
+.illustration p {
+  margin-top: 10px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.tracker-title {
+  font-size: 48px !important; 
+  position: relative;
+  top: 500px;
+  left: -10px;
+}
+
+.tracker-description {
+  position: relative;
+  top: 460px;
+  left: 10px;
+  font-size:24px !important;
+}
+
+.description {
+  margin-left: -190px;
+  position: relative;
+  font-size: 24px;
+  width: auto;
+}
+
+.description p {
+  margin: 0;
+} 
