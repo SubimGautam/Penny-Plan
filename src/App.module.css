@@ -1,0 +1,77 @@
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: white; /* White background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+
+/* Brand Text */
+.pennyplanText {
+  font-size: 2.5rem; /* Big text */
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 150px; /* Adjust margin as needed */
+}
+
+.penny {
+  color: black; /* "Penny" in black */
+}
+
+.plan {
+  color: #22e5a1; /* "PLAN" in #22E5A1 */
+}
+
+.pennyplanText:hover {
+  text-decoration: none; /* No underline on hover */
+}
+
+/* Navigation Buttons */
+.authButtons {
+  display: flex;
+  gap: 15px; /* Space between buttons */
+  margin-right: 150px; /* Adjust margin as needed */
+}
+
+.authButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.signupButton {
+  background-color: #00b894; /* Green background */
+  color: white; /* White text */
+  border: 2px solid #00b894; /* Green border */
+}
+
+.signupButton:hover {
+  background-color: #00997a; /* Darker green on hover */
+}
+
+.loginButton {
+  background-color: white; /* White background */
+  color: #00b894; /* Green text */
+  border: 2px solid #00b894; /* Green border */
+}
+
+.loginButton:hover {
+  background-color: #f0f0f0; /* Light gray on hover */
+}
+
+.logoutButton {
+  background-color: #f44336; /* Red background */
+  color: white; /* White text */
+  border: 2px solid #f44336; /* Red border */
+}
+
+.logoutButton:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+}

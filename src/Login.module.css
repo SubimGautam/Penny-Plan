@@ -1,0 +1,278 @@
+/* Global Box-Sizing for consistency */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent page scrolling */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Main Container: centers content with equal left/right gaps */
+.main-container {
+  display: flex;
+  height: 100vh;              /* Full viewport height */
+  justify-content: space-evenly;  /* Even spacing between items and edges */
+  align-items: center;        /* Center items vertically */
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 0 50px;            /* Fixed, equal left/right padding */
+}
+
+/* Image Container: shifted 20px to the right */
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(20px);  /* Moves image a bit to the right */
+  margin-top: -120px;
+  margin-left: -400px;
+}
+
+.image-container img {
+  width: 100%;
+  max-width: 1000px;  /* Larger image size */
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+}
+
+/* Form Container: shifted 20px to the left */
+.form-container {
+  flex: 1;
+  max-width: 600px;     /* Increased form width */
+  padding: 1rem 2rem;    /* Reduced vertical padding for a shorter height */
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease;
+  transform: translateX(-20px); /* Moves form a bit to the left */
+  margin-top: -120px;
+  margin-left: -100px;
+}
+
+.form-container:hover {
+  /* Maintain horizontal offset on hover and add a slight upward lift */
+  transform: translateX(-20px) translateY(-5px);
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  position: relative;
+  display: inline-block;
+}
+
+.header h1::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: #2ecc71;
+  border-radius: 2px;
+}
+
+
+.google-auth {
+  background: #fff; /* White background */
+  color: #757575; /* Google's text color */
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0 auto 1.5rem; /* Center the button */
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Match form width */
+  max-width: 400px; /* Limit width for better appearance */
+}
+
+.google-auth:hover {
+  background: #f8f8f8; /* Slightly darker background on hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.google-auth:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.google-auth img {
+  width: 20px; /* Google logo size */
+  height: 20px;
+  margin-right: 12px; /* Space between logo and text */
+}
+
+.google-auth span {
+  font-size: 1rem;
+  letter-spacing: 0.25px;
+  color: #757575; /* Google's text color */
+}
+/* OR Separator */
+.or-separator {
+  position: relative;
+  margin: 2rem 0;
+  color: #95a5a6;
+  font-weight: 500;
+  text-align: center;
+}
+
+.or-separator::before,
+.or-separator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.or-separator::before {
+  left: 0;
+}
+
+.or-separator::after {
+  right: 0;
+}
+
+/* Form Group: Input & Label */
+.form-group {
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+
+.form-group label {
+  position: absolute;
+  left: 15px;
+  top: 16px;
+  color: #95a5a6;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.form-group input {
+  width: 100%;   /* Ensures input spans the container width */
+  padding: 16px 20px 10px;
+  border: 2px solid #ecedef;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fcfcfc;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group input:valid {
+  border-color: #3498db;
+  background: white;
+  box-shadow: 0 5px 15px rgba(52,152,219,0.08);
+}
+
+/* Hide floating label when input is focused or filled */
+.form-group input:focus + label,
+.form-group input:valid + label {
+  display: none;
+}
+
+/* Signup Button: matching text field width */
+.signup-btn {
+  width: 100%;   /* Matches input field width */
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  border: none;
+  padding: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.signup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(46,204,113,0.3);
+}
+
+/* Footer */
+.footer-text {
+  text-align: center;
+  margin-top: 1rem;
+  color: #7f8c8d;
+  font-size: 0.95rem;
+}
+
+.footer-text a {
+  color: #3498db;
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+}
+
+.footer-text a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #3498db;
+  transition: width 0.3s ease;
+}
+
+.footer-text a:hover::after {
+  width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .main-container {
+    flex-direction: column;
+    padding: 0 20px;
+  }
+  
+  .image-container,
+  .form-container {
+    width: 100%;
+    transform: none;  /* Remove horizontal offset on smaller screens if needed */
+  }
+  
+  .image-container img {
+    max-width: 800px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 1rem;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+}

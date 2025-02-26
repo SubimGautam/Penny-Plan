@@ -1,124 +1,81 @@
-// import React from 'react';
-// import './SignUp.css';
-// import loginImage from './Assets/login.png';
-
-
-// const SignUp = () => {
-//   return (
-//     <div className="main-container">
-//       {/* Left side - Image */}
-//       <div className="image-container">
-//       <img src={loginImage} alt="PennyPLAN Visual" />
-//       </div>
-
-//       {/* Right side - Form */}
-//       <div className="form-container">
-//         <div className="header">
-//           <div className="nav-links">
-//           </div>
-//         </div>
-
-//         <div className="savings-section">
-//           <button className="google-auth">
-//             <i className="fab fa-google"></i>
-//             Sign in with Google
-//           </button>
-//           <div className="or-separator">OR</div>
-//         </div>
-
-//         <form className="signup-form">
-//           <div className="form-group">
-//           </div>
-
-//           <div className="form-group">
-//             <label>Email</label>
-//             <input type="email" placeholder="Enter Email" />
-//           </div>
-
-//           <div className="form-group">
-//             <label>Password</label>
-//             <input type="password" placeholder="Enter Password" />
-//           </div>
-
-//           <button type="submit" className="signup-btn">Log In</button>
-//         </form>
-
-//         <p className="footer-text">
-//           Don' have an account? <a href="/login">SignUp</a>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SignUp;
-
-// src/components/Login/Login.jsx
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
-import "./Login.css";
-import loginImage from "./Assets/login.png";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./Login.module.css";
+import image from './Assets/image.png';
+import googleLogo from './Assets/google.png';
 
 const Login = ({ onAuth }) => {
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Simulate login logic (replace with actual API call)
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    if (email && password) {
-      // Call the onAuth function to set authentication state
-      onAuth();
+    if (!email || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
 
-      // Redirect to the dashboard
+    try {
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      onAuth();
       navigate("/dashboard");
-    } else {
-      alert("Please fill in all fields.");
+    } catch (err) {
+      setError(err.message);
+      console.error('Login error:', err);
     }
   };
 
   return (
-    <div className="main-container">
-      {/* Left side - Image */}
-      <div className="image-container">
-        <img src={loginImage} alt="PennyPLAN Visual" />
+    <div className={styles["main-container"]}>
+      <div className={styles["image-container"]}>
+        <img src={image} alt="Login Visual" />
       </div>
 
-      {/* Right side - Form */}
-      <div className="form-container">
-        <div className="header">
-          <div className="nav-links"></div>
+      <div className={styles["form-container"]}>
+        <div className={styles.header}>
+          <h1>Login</h1>
         </div>
 
-        <div className="savings-section">
-          <button className="google-auth">
-            <i className="fab fa-google"></i>
-            Login with Google
-          </button>
-          <div className="or-separator">OR</div>
-        </div>
+        <button className={styles["google-auth"]}>
+          <img src={googleLogo} alt="Google Logo" />
+          <span>Login with Google</span>
+        </button>
+        <div className={styles["or-separator"]}>OR</div>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="form-group">
+        <form onSubmit={handleSubmit}>
+          {error && <div className={styles.error}>{error}</div>}
+          
+          <div className={styles["form-group"]}>
             <label>Email</label>
-            <input type="email" name="email" placeholder="Enter Email" required />
+            <input type="email" name="email" required />
           </div>
 
-          <div className="form-group">
+          <div className={styles["form-group"]}>
             <label>Password</label>
-            <input type="password" name="password" placeholder="Enter Password" required />
+            <input type="password" name="password" required />
           </div>
 
-          <button type="submit" className="login-btn">
-            Login
-          </button>
+          <button type="submit" className={styles["signup-btn"]}>Login</button>
         </form>
 
-        <p className="footer-text">
-          Don't have an account? <a href="/signup">Sign Up</a>
+        <p className={styles["footer-text"]}>
+          Don't have an account? <a href="/signup">Sign up</a>
         </p>
       </div>
     </div>

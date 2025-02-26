@@ -1,3 +1,4 @@
+/* Reset */
 body {
   margin: 0;
   padding: 0;
@@ -8,12 +9,13 @@ body {
   overflow-x: hidden;
 }
 
-.app-container {
+.appContainer {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
@@ -29,36 +31,37 @@ body {
   margin-left: 150px;
 }
 
-.plan-highlight {
+.planHighlight {
   color: #00b894;
 }
 
-.auth-buttons {
+.authButtons {
   display: flex;
   gap: 15px;
   margin-right: 150px;
 }
 
-.signup-button,
-.login-button {
+.signupButton,
+.loginButton {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.signup-button {
+.signupButton {
   background-color: #00b894;
   color: white;
 }
 
-.login-button {
+.loginButton {
   background-color: white;
   color: #00b894;
   border: 2px solid #00b894;
 }
 
-.main-section {
+/* Main Section */
+.mainSection {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -66,6 +69,7 @@ body {
   gap: 100px;
 }
 
+/* Content */
 .content {
   display: flex;
   flex-direction: column;
@@ -73,37 +77,41 @@ body {
 }
 
 .content h2 {
-  font-size: 2.5rem;
+  font-size: 75px;
   margin-bottom: 10px;
   margin-left: -190px;
-  font-size: 75px;
   margin-top: -30px;
 }
 
-.content p {
-  margin-bottom: 20px;
+.description {
+  margin-left: -190px;
+  position: relative;
   font-size: 24px;
+  width: auto;
+}
+.description p {
+  margin: 0;
 }
 
-.expense-card {
+/* Expense Card */
+.expenseCard {
   background-color: white;
   border: 1px solid #ddd;
-  padding: 30px; 
+  padding: 30px;
   border-radius: 10px;
-  max-width: 550px; 
-  margin: 0 0 0 50px; 
+  max-width: 550px;
   margin-left: -190px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.header-row {
+.headerRow {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px; 
+  margin-bottom: 30px;
 }
 
 .amount {
-  font-size: 2rem; 
+  font-size: 2rem;
 }
 
 .expenses {
@@ -116,21 +124,22 @@ body {
   display: flex;
   justify-content: space-between;
   border-top: 1px solid #ddd;
-  padding: 15px 0; 
+  padding: 15px 0;
 }
 
 .expenses li:first-child {
   border-top: none;
 }
 
-.left-text {
-  font-size: 1.2rem; 
+.leftText {
+  font-size: 1.2rem;
 }
 
-.right-amount {
-  font-size: 1.3rem; 
+.rightAmount {
+  font-size: 1.3rem;
 }
 
+/* Illustration */
 .illustration {
   flex: 1;
   transform: translateX(80px);
@@ -140,44 +149,21 @@ body {
 .image {
   position: absolute;
   top: -30px;
-  left: 50px; 
+  left: 50px;
   width: 750px;
   height: auto;
 }
 
-
-.illustration h3 {
-  margin-top: 20px;
-  font-size: 1.8rem;
-}
-
-.illustration p {
-  margin-top: 10px;
-  color: #555;
-  line-height: 1.5;
-}
-
-.tracker-title {
-  font-size: 48px !important; 
+.trackerTitle {
+  font-size: 48px !important;
   position: relative;
   top: 500px;
   left: -10px;
 }
 
-.tracker-description {
+.trackerDescription {
   position: relative;
   top: 460px;
   left: 10px;
-  font-size:24px !important;
+  font-size: 24px !important;
 }
-
-.description {
-  margin-left: -190px;
-  position: relative;
-  font-size: 24px;
-  width: auto;
-}
-
-.description p {
-  margin: 0;
-} 
