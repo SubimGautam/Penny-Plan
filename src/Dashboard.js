@@ -37,7 +37,7 @@ export default function Dashboard({ handleLogout }) {
   const [transactions, setTransactions] = useState([]);
   const [activeSection, setActiveSection] = useState("dashboard");
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const [currency, setCurrency] = useState("USD");
   const navigate = useNavigate();
 
   // Filter state
@@ -57,8 +57,32 @@ export default function Dashboard({ handleLogout }) {
     description: "",
   });
 
-  // Fetch user ID and transactions on initial load
+  // Currency handling
+  useEffect(() => {
+    const savedCurrency = localStorage.getItem("currency");
+    if (savedCurrency) {
+      setCurrency(savedCurrency);
+    }
+  }, []);
 
+  useEffect(() => {
+    localStorage.setItem("currency", currency);
+  }, [currency]);
+
+  const getCurrencySymbol = (currency) => {
+    const symbols = {
+      USD: '$',
+      EUR: '€',
+      GBP: '£',
+      JPY: '¥',
+      INR: '₹',
+      AUD: 'A$',
+      CAD: 'C$',
+      CNY: '¥',
+      NPR: 'रू'
+    };
+    return symbols[currency] || '$';
+  };
 
   // Fetch transactions from the backend
   const fetchTransactions = async () => {
@@ -77,7 +101,6 @@ export default function Dashboard({ handleLogout }) {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
-        // Ensure amount is a number
         const transactionsWithNumbers = data.map(t => ({
           ...t,
           amount: parseFloat(t.amount),
@@ -110,7 +133,7 @@ export default function Dashboard({ handleLogout }) {
         },
         body: JSON.stringify({
           ...formData,
-          amount: parseFloat(formData.amount), // Ensure amount is a number
+          amount: parseFloat(formData.amount),
         }),
       });
   
@@ -127,7 +150,6 @@ export default function Dashboard({ handleLogout }) {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const newTransaction = await response.json();
-        // Ensure new transaction's amount is a number
         setTransactions([...transactions, {
           ...newTransaction,
           amount: parseFloat(newTransaction.amount),
@@ -149,12 +171,16 @@ export default function Dashboard({ handleLogout }) {
       alert(error.message);
     }
   };
+
   // Handle transaction deletion
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/transactions/${id}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
@@ -212,7 +238,7 @@ export default function Dashboard({ handleLogout }) {
     labels: ["Income", "Expense", "Investment", "Saving"],
     datasets: [
       {
-        label: "Total Amount",
+        label: `Total Amount (${currency})`,
         data: ["income", "expense", "investment", "saving"].map((type) =>
           transactions
             .filter((t) => t.type === type)
@@ -244,11 +270,11 @@ export default function Dashboard({ handleLogout }) {
   const calculateTotal = (type) => {
     const total = transactions
       .filter((t) => t.type === type)
-      .reduce((sum, t) => sum + (t.amount || 0), 0); // Ensure amount is a valid number
+      .reduce((sum, t) => sum + (t.amount || 0), 0);
   
-    return Number.isFinite(total) ? total.toFixed(2) : "0.00"; // Handle cases where total is NaN or undefined
+    return Number.isFinite(total) ? total.toFixed(2) : "0.00";
   };
-  
+
   return (
     <div className={`${styles.dashboardContainer} ${isDarkMode ? styles.darkMode : ""}`}>
       {/* Sidebar */}
@@ -317,22 +343,30 @@ export default function Dashboard({ handleLogout }) {
               <div className={styles.summaryGrid}>
                 <div className={`${styles.summaryCard} ${styles.income}`}>
                   <h3>Income</h3>
-                  <div className={styles.summaryAmount}>${calculateTotal("income")}</div>
+                  <div className={styles.summaryAmount}>
+                    {getCurrencySymbol(currency)}{calculateTotal("income")}
+                  </div>
                   <div className={styles.summaryPercentage}>▲87%</div>
                 </div>
                 <div className={`${styles.summaryCard} ${styles.expense}`}>
                   <h3>Expense</h3>
-                  <div className={styles.summaryAmount}>${calculateTotal("expense")}</div>
+                  <div className={styles.summaryAmount}>
+                    {getCurrencySymbol(currency)}{calculateTotal("expense")}
+                  </div>
                   <div className={styles.summaryPercentage}>▼55%</div>
                 </div>
                 <div className={`${styles.summaryCard} ${styles.investment}`}>
                   <h3>Investment</h3>
-                  <div className={styles.summaryAmount}>${calculateTotal("investment")}</div>
+                  <div className={styles.summaryAmount}>
+                    {getCurrencySymbol(currency)}{calculateTotal("investment")}
+                  </div>
                   <div className={styles.summaryPercentage}>▼55%</div>
                 </div>
                 <div className={`${styles.summaryCard} ${styles.saving}`}>
                   <h3>Saving</h3>
-                  <div className={styles.summaryAmount}>${calculateTotal("saving")}</div>
+                  <div className={styles.summaryAmount}>
+                    {getCurrencySymbol(currency)}{calculateTotal("saving")}
+                  </div>
                   <div className={styles.summaryPercentage}>▲59%</div>
                 </div>
               </div>
@@ -429,7 +463,7 @@ export default function Dashboard({ handleLogout }) {
                       <td>{t.date}</td>
                       <td>{t.type}</td>
                       <td>{t.category}</td>
-                      <td>${t.amount.toFixed(2)}</td>
+                      <td>{getCurrencySymbol(currency)}{t.amount.toFixed(2)}</td>
                       <td>{t.description || "-"}</td>
                       <td>
                         <button
@@ -557,7 +591,7 @@ export default function Dashboard({ handleLogout }) {
                         </span>
                       </td>
                       <td>{t.category}</td>
-                      <td>${t.amount.toFixed(2)}</td>
+                      <td>{getCurrencySymbol(currency)}{t.amount.toFixed(2)}</td>
                       <td>{new Date(t.date).toLocaleDateString('en-US')}</td>
                       <td>
                         <button
@@ -576,9 +610,26 @@ export default function Dashboard({ handleLogout }) {
         )}
 
         {activeSection === "settings" && (
-          <div className={styles.blankSection}>
+          <div className={styles.settingsSection}>
             <h2>Settings</h2>
-            <p>This page is intentionally left blank.</p>
+            <div className={styles.settingItem}>
+              <label>Preferred Currency:</label>
+              <select 
+                value={currency} 
+                onChange={(e) => setCurrency(e.target.value)}
+                className={styles.currencySelect}
+              >
+                <option value="USD">US Dollar (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+                <option value="GBP">British Pound (GBP)</option>
+                <option value="JPY">Japanese Yen (JPY)</option>
+                <option value="INR">Indian Rupee (INR)</option>
+                <option value="AUD">Australian Dollar (AUD)</option>
+                <option value="CAD">Canadian Dollar (CAD)</option>
+                <option value="CNY">Chinese Yuan (CNY)</option>
+                <option value="NPR">Nepalese Rupee (NPR)</option>
+              </select>
+            </div>
           </div>
         )}
       </main>
