@@ -12,8 +12,11 @@ import {
 } from "chart.js";
 import Switch from "react-switch";
 import { useNavigate } from "react-router-dom";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { categoryOptions } from "./CategoryIcons";
 
-// Import your icons
 import logoIcon from "./Assets/Logo.png";
 import homeIcon from "./Assets/Home.png";
 import transactionIcon from "./Assets/transaction.png";
@@ -41,10 +44,10 @@ export default function Dashboard({ handleLogout }) {
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
-    minAmount: '',
-    maxAmount: '',
-    startDate: '',
-    endDate: ''
+    minAmount: "",
+    maxAmount: "",
+    startDate: "",
+    endDate: "",
   });
   const [showFilters, setShowFilters] = useState(false);
 
@@ -69,81 +72,80 @@ export default function Dashboard({ handleLogout }) {
 
   useEffect(() => {
     const checkAuthAndFetch = async () => {
-      const token = localStorage.getItem('token');
-      console.log('Token on mount:', token);
+      const token = localStorage.getItem("token");
+      console.log("Token on mount:", token);
       if (!token) {
-        console.log('No token found, logging out');
+        console.log("No token found, logging out");
         handleLogout();
-        navigate('/login');
+        navigate("/login");
         return;
       }
       try {
         await fetchTransactions();
       } catch (error) {
-        console.error('Initial fetch error:', error);
+        console.error("Initial fetch error:", error);
         handleLogout();
-        navigate('/login');
+        navigate("/login");
       }
     };
     checkAuthAndFetch();
-  }, []);
+  }, [handleLogout, navigate]);
 
   const getCurrencySymbol = (currency) => {
     const symbols = {
-      USD: '$',
-      EUR: '€',
-      GBP: '£',
-      JPY: '¥',
-      INR: '₹',
-      AUD: 'A$',
-      CAD: 'C$',
-      CNY: '¥',
-      NPR: 'रू'
+      USD: "$",
+      EUR: "€",
+      GBP: "£",
+      JPY: "¥",
+      INR: "₹",
+      AUD: "A$",
+      CAD: "C$",
+      CNY: "¥",
+      NPR: "रू",
     };
-    return symbols[currency] || '$';
+    return symbols[currency] || "$";
   };
 
   const fetchTransactions = async () => {
     try {
-      const token = localStorage.getItem('token');
-      console.log('Fetching transactions with token:', token);
+      const token = localStorage.getItem("token");
+      console.log("Fetching transactions with token:", token);
       if (!token) {
-        console.log('No token available for fetch');
+        console.log("No token available for fetch");
         handleLogout();
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
-      console.log('Making request to http://localhost:5000/api/transactions');
-      const response = await fetch('http://localhost:5000/api/transactions', {
+      console.log("Making request to http://localhost:5000/api/transactions");
+      const response = await fetch("http://localhost:5000/api/transactions", {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
-      console.log('Response status:', response.status);
+      console.log("Response status:", response.status);
       if (response.status === 401) {
-        console.log('Unauthorized - Logging out');
+        console.log("Unauthorized - Logging out");
         handleLogout();
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Fetch failed with status:', response.status, 'Response:', errorText);
+        console.error("Fetch failed with status:", response.status, "Response:", errorText);
         throw new Error(`Failed to fetch transactions: ${response.status} - ${errorText}`);
       }
 
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
-        console.log('Received transactions:', data);
-        // Ensure type is a string
-        const transactionsWithNumbers = data.map(t => ({
+        console.log("Received transactions:", data);
+        const transactionsWithNumbers = data.map((t) => ({
           ...t,
-          type: String(t.type || ''), // Convert to string, default to empty if missing
+          type: String(t.type || ""),
           amount: parseFloat(t.amount || 0),
         }));
         setTransactions(transactionsWithNumbers);
@@ -153,35 +155,41 @@ export default function Dashboard({ handleLogout }) {
         throw new Error("Server did not return JSON");
       }
     } catch (error) {
-      console.error('Error fetching transactions:', error.message);
-      if (error.message === 'Failed to fetch') {
-        console.log('Network error or server unreachable');
+      console.error("Error fetching transactions:", error.message);
+      if (error.message === "Failed to fetch") {
+        console.log("Network error or server unreachable");
         handleLogout();
-        navigate('/login');
+        navigate("/login");
       }
-      alert('Failed to fetch transactions. Please try again.');
+      alert("Failed to fetch transactions. Please try again.");
     }
   };
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+  const handleTypeChange = (type) => {
+    setFormData({ ...formData, type, category: "" });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting data:", formData);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
         handleLogout();
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/transactions', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/transactions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...formData,
@@ -191,7 +199,7 @@ export default function Dashboard({ handleLogout }) {
 
       if (response.status === 401) {
         handleLogout();
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
@@ -200,15 +208,15 @@ export default function Dashboard({ handleLogout }) {
         try {
           errorData = await response.json();
         } catch (jsonError) {
-          errorData = { error: 'Failed to add transaction' };
+          errorData = { error: "Failed to add transaction" };
         }
-        throw new Error(errorData.error || 'Failed to add transaction');
+        throw new Error(errorData.error || "Failed to add transaction");
       }
 
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const newTransaction = await response.json();
-        console.log('Transaction added:', newTransaction);
+        console.log("Transaction added:", newTransaction);
         setFormData({
           date: "",
           type: "income",
@@ -223,41 +231,41 @@ export default function Dashboard({ handleLogout }) {
         throw new Error("Server did not return JSON on add transaction");
       }
     } catch (error) {
-      console.error('Error adding transaction:', error);
+      console.error("Error adding transaction:", error);
       alert(error.message);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
         handleLogout();
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
       const response = await fetch(`http://localhost:5000/api/transactions/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 401) {
         handleLogout();
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
       if (!response.ok) {
-        throw new Error('Failed to delete transaction');
+        throw new Error("Failed to delete transaction");
       }
 
       await fetchTransactions();
     } catch (error) {
-      console.error('Error deleting transaction:', error);
-      alert('Failed to delete transaction. Please try again.');
+      console.error("Error deleting transaction:", error);
+      alert("Failed to delete transaction. Please try again.");
     }
   };
 
@@ -271,14 +279,14 @@ export default function Dashboard({ handleLogout }) {
 
   const clearFilters = () => {
     setFilters({
-      minAmount: '',
-      maxAmount: '',
-      startDate: '',
-      endDate: ''
+      minAmount: "",
+      maxAmount: "",
+      startDate: "",
+      endDate: "",
     });
   };
 
-  const filteredTransactions = transactions.filter(t => {
+  const filteredTransactions = transactions.filter((t) => {
     const transactionDate = new Date(t.date);
     const startDateFilter = filters.startDate ? new Date(filters.startDate) : null;
     const endDateFilter = filters.endDate ? new Date(filters.endDate) : null;
@@ -297,6 +305,25 @@ export default function Dashboard({ handleLogout }) {
     setIsDarkMode(!isDarkMode);
   };
 
+  const calculateTotal = (type) => {
+    const total = transactions
+      .filter((t) => t.type === type)
+      .reduce((sum, t) => sum + (t.amount || 0), 0);
+    return Number.isFinite(total) ? total.toFixed(2) : "0.00";
+  };
+
+  const calculatePercentage = (type) => {
+    const typeTotal = parseFloat(calculateTotal(type));
+    const grandTotal = ["income", "expense", "investment", "saving"]
+      .map((t) => parseFloat(calculateTotal(t)))
+      .reduce((sum, val) => sum + val, 0);
+
+    if (grandTotal === 0) return "0%";
+    const percentage = (typeTotal / grandTotal) * 100;
+    const sign = type === "income" || type === "saving" ? "▲" : "▼";
+    return `${sign}${percentage.toFixed(0)}%`;
+  };
+
   const chartData = {
     labels: ["Income", "Expense", "Investment", "Saving"],
     datasets: [
@@ -307,32 +334,29 @@ export default function Dashboard({ handleLogout }) {
             .filter((t) => t.type === type)
             .reduce((sum, t) => sum + t.amount, 0)
         ),
-        backgroundColor: ["#4caf50", "#f44336", "#2196f3", "#ffeb3b"],
+        backgroundColor: ["#4caf50", "#f44336", "#2196f3", "#ff9800"],
       },
     ],
   };
 
   const incomeBreakdownData = {
     labels: transactions.filter((t) => t.type === "income").map((t) => t.category),
-    datasets: [{
-      data: transactions.filter((t) => t.type === "income").map((t) => t.amount),
-      backgroundColor: ["#4caf50", "#81c784", "#a5d6a7", "#c8e6c9"]
-    }]
+    datasets: [
+      {
+        data: transactions.filter((t) => t.type === "income").map((t) => t.amount),
+        backgroundColor: ["#4caf50", "#81c784", "#a5d6a7", "#c8e6c9"],
+      },
+    ],
   };
 
   const expenseBreakdownData = {
     labels: transactions.filter((t) => t.type === "expense").map((t) => t.category),
-    datasets: [{
-      data: transactions.filter((t) => t.type === "expense").map((t) => t.amount),
-      backgroundColor: ["#f44336", "#e57373", "#ef9a9a", "#ffcdd2"]
-    }]
-  };
-
-  const calculateTotal = (type) => {
-    const total = transactions
-      .filter((t) => t.type === type)
-      .reduce((sum, t) => sum + (t.amount || 0), 0);
-    return Number.isFinite(total) ? total.toFixed(2) : "0.00";
+    datasets: [
+      {
+        data: transactions.filter((t) => t.type === "expense").map((t) => t.amount),
+        backgroundColor: ["#f44336", "#e57373", "#ef9a9a", "#ffcdd2"],
+      },
+    ],
   };
 
   return (
@@ -382,8 +406,14 @@ export default function Dashboard({ handleLogout }) {
               className={styles.switch}
             />
           </div>
-          <button className={styles.logoutButton} onClick={handleLogout}>
-            <img src={logoutIcon} alt="Logout Icon" className={styles.sidebarIcon} />
+          <button
+            className={styles.logoutButton}
+            onClick={() => {
+              handleLogout();
+              navigate("/login");
+            }}
+          >
+            <img src={logoutIcon} alt="Logout" className={styles.sidebarIcon} />
             Logout
           </button>
         </div>
@@ -397,38 +427,42 @@ export default function Dashboard({ handleLogout }) {
                 <div className={`${styles.summaryCard} ${styles.income}`}>
                   <h3>Income</h3>
                   <div className={styles.summaryAmount}>
-                    {getCurrencySymbol(currency)}{calculateTotal("income")}
+                    {getCurrencySymbol(currency)}
+                    {calculateTotal("income")}
                   </div>
-                  <div className={styles.summaryPercentage}>▲87%</div>
+                  <div className={styles.summaryPercentage}>{calculatePercentage("income")}</div>
                 </div>
                 <div className={`${styles.summaryCard} ${styles.expense}`}>
                   <h3>Expense</h3>
                   <div className={styles.summaryAmount}>
-                    {getCurrencySymbol(currency)}{calculateTotal("expense")}
+                    {getCurrencySymbol(currency)}
+                    {calculateTotal("expense")}
                   </div>
-                  <div className={styles.summaryPercentage}>▼55%</div>
+                  <div className={styles.summaryPercentage}>{calculatePercentage("expense")}</div>
                 </div>
                 <div className={`${styles.summaryCard} ${styles.investment}`}>
                   <h3>Investment</h3>
                   <div className={styles.summaryAmount}>
-                    {getCurrencySymbol(currency)}{calculateTotal("investment")}
+                    {getCurrencySymbol(currency)}
+                    {calculateTotal("investment")}
                   </div>
-                  <div className={styles.summaryPercentage}>▼55%</div>
+                  <div className={styles.summaryPercentage}>{calculatePercentage("investment")}</div>
                 </div>
                 <div className={`${styles.summaryCard} ${styles.saving}`}>
                   <h3>Saving</h3>
                   <div className={styles.summaryAmount}>
-                    {getCurrencySymbol(currency)}{calculateTotal("saving")}
+                    {getCurrencySymbol(currency)}
+                    {calculateTotal("saving")}
                   </div>
-                  <div className={styles.summaryPercentage}>▲59%</div>
+                  <div className={styles.summaryPercentage}>{calculatePercentage("saving")}</div>
                 </div>
               </div>
             </section>
 
             <div className={styles.topSection}>
               <section className={`${styles.formContainer} ${styles.card}`}>
-                <h2>Add Transaction</h2>
-                <form onSubmit={handleSubmit}>
+                <h2>Add your Transaction</h2>
+                <form onSubmit={handleSubmit} className={styles.transactionForm}>
                   <div className={styles.formRow}>
                     <label htmlFor="date">Date</label>
                     <input
@@ -440,17 +474,7 @@ export default function Dashboard({ handleLogout }) {
                     />
                   </div>
                   <div className={styles.formRow}>
-                    <label htmlFor="category">Category</label>
-                    <input
-                      id="category"
-                      type="text"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className={styles.formRow}>
-                    <label htmlFor="amount">Amount</label>
+                    <label htmlFor="amount">Add amount...</label>
                     <input
                       id="amount"
                       type="number"
@@ -458,32 +482,77 @@ export default function Dashboard({ handleLogout }) {
                       value={formData.amount}
                       onChange={handleInputChange}
                       required
+                      placeholder="Add amount..."
                     />
                   </div>
                   <div className={styles.formRow}>
-                    <label htmlFor="description">Description</label>
+                    <label>Type</label>
+                    <div className={styles.typeOptions}>
+                      {["income", "expense", "investment", "saving"].map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          className={`${styles.typeButton} ${styles[type]} ${
+                            formData.type === type ? styles.activeType : ""
+                          }`}
+                          onClick={() => handleTypeChange(type)}
+                        >
+                          {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.formRow}>
+                    <label htmlFor="category">Category</label>
+                    <Select
+                      id="category"
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      displayEmpty
+                      required
+                      fullWidth
+                      renderValue={(selected) => (selected ? selected : "Select Category")}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          color: isDarkMode ? "#ffffff" : "#000000",
+                        },
+                        "& .MuiInputBase-root": {
+                          backgroundColor: isDarkMode ? "#3e3e5b" : "#ffffff",
+                          borderColor: isDarkMode ? "#666" : "#ccc",
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: isDarkMode ? "#666" : "#ccc",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          borderColor: isDarkMode ? "#4a90e2" : "#3e6ff4",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: isDarkMode ? "#4a90e2" : "#3e6ff4",
+                        },
+                      }}
+                    >
+                      <MenuItem value="" disabled>
+                        Select Category
+                      </MenuItem>
+                      {categoryOptions[formData.type].map((option) => (
+                        <MenuItem key={option.name} value={option.name}>
+                          <ListItemIcon>{option.icon}</ListItemIcon>
+                          {option.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className={styles.formRow}>
+                    <label htmlFor="description">Add description...</label>
                     <input
                       id="description"
                       type="text"
                       value={formData.description}
                       onChange={handleInputChange}
+                      placeholder="Add description..."
                     />
                   </div>
-                  <div className={styles.formRow}>
-                    <label htmlFor="type">Type</label>
-                    <select
-                      id="type"
-                      value={formData.type}
-                      onChange={handleInputChange}
-                    >
-                      {["income", "expense", "investment", "saving"].map((t) => (
-                        <option key={t} value={t}>
-                          {t.charAt(0).toUpperCase() + t.slice(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <button type="submit" className={styles.submitButton}>
+                  <button type="submit" className={styles.addTransactionButton}>
                     Add Transaction
                   </button>
                 </form>
@@ -516,7 +585,10 @@ export default function Dashboard({ handleLogout }) {
                       <td>{t.date}</td>
                       <td>{t.type}</td>
                       <td>{t.category}</td>
-                      <td>{getCurrencySymbol(currency)}{t.amount.toFixed(2)}</td>
+                      <td>
+                        {getCurrencySymbol(currency)}
+                        {t.amount.toFixed(2)}
+                      </td>
                       <td>{t.description || "-"}</td>
                       <td>
                         <button
@@ -552,7 +624,7 @@ export default function Dashboard({ handleLogout }) {
                 <h2>Transaction History</h2>
                 <div className={styles.tableControls}>
                   <div className={styles.filterContainer}>
-                    <button 
+                    <button
                       className={styles.filterButton}
                       onClick={() => setShowFilters(!showFilters)}
                     >
@@ -595,13 +667,13 @@ export default function Dashboard({ handleLogout }) {
                           />
                         </div>
                         <div className={styles.filterActions}>
-                          <button 
+                          <button
                             className={styles.applyButton}
                             onClick={applyFilters}
                           >
                             Apply
                           </button>
-                          <button 
+                          <button
                             className={styles.clearButton}
                             onClick={clearFilters}
                           >
@@ -610,7 +682,7 @@ export default function Dashboard({ handleLogout }) {
                         </div>
                       </div>
                     )}
-                    <button 
+                    <button
                       className={styles.addButton}
                       onClick={() => setActiveSection("dashboard")}
                     >
@@ -636,14 +708,17 @@ export default function Dashboard({ handleLogout }) {
                       <td>{index + 1}</td>
                       <td>
                         <span className={`${styles.typePill} ${styles[t.type]}`}>
-                          {typeof t.type === 'string' && t.type.length > 0 
-                            ? t.type.charAt(0).toUpperCase() + t.type.slice(1) 
-                            : t.type || 'Unknown'}
+                          {typeof t.type === "string" && t.type.length > 0
+                            ? t.type.charAt(0).toUpperCase() + t.type.slice(1)
+                            : t.type || "Unknown"}
                         </span>
                       </td>
                       <td>{t.category}</td>
-                      <td>{getCurrencySymbol(currency)}{t.amount.toFixed(2)}</td>
-                      <td>{new Date(t.date).toLocaleDateString('en-US')}</td>
+                      <td>
+                        {getCurrencySymbol(currency)}
+                        {t.amount.toFixed(2)}
+                      </td>
+                      <td>{new Date(t.date).toLocaleDateString("en-US")}</td>
                       <td>
                         <button
                           onClick={() => handleDelete(t.id)}
@@ -665,8 +740,8 @@ export default function Dashboard({ handleLogout }) {
             <h2>Settings</h2>
             <div className={styles.settingItem}>
               <label>Preferred Currency:</label>
-              <select 
-                value={currency} 
+              <select
+                value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 className={styles.currencySelect}
               >
