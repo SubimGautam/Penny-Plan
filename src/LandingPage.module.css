@@ -15,22 +15,6 @@ body {
   padding: 0 20px;
 }
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-left: 150px;
-}
-
 .planHighlight {
   color: #00b894;
 }
@@ -79,12 +63,12 @@ body {
 .content h2 {
   font-size: 75px;
   margin-bottom: 10px;
-  margin-left: -190px;
-  margin-top: -30px;
+  margin-left: -300px;
+  margin-top: 90px;
 }
 
 .description {
-  margin-left: -190px;
+  margin-left: -300px;
   position: relative;
   font-size: 24px;
   width: auto;
@@ -93,14 +77,14 @@ body {
   margin: 0;
 }
 
-/* Expense Card */
+
 .expenseCard {
   background-color: white;
   border: 1px solid #ddd;
   padding: 30px;
   border-radius: 10px;
   max-width: 550px;
-  margin-left: -190px;
+  margin-left: -300px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -139,7 +123,7 @@ body {
   font-size: 1.3rem;
 }
 
-/* Illustration */
+
 .illustration {
   flex: 1;
   transform: translateX(80px);
@@ -148,22 +132,22 @@ body {
 
 .image {
   position: absolute;
-  top: -30px;
-  left: 50px;
-  width: 750px;
+  top: 75px;
+  left: 200px;
+  width: 900px;
   height: auto;
 }
 
 .trackerTitle {
   font-size: 48px !important;
   position: relative;
-  top: 500px;
-  left: -10px;
+  top: 650px;
+  left: 220px;
 }
 
 .trackerDescription {
   position: relative;
-  top: 460px;
-  left: 10px;
+  top: 620px;
+  left: 220px;
   font-size: 24px !important;
 }
