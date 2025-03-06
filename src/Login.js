@@ -7,11 +7,11 @@ import googleLogo from './Assets/google.png';
 const Login = ({ onAuth }) => {
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
 
     if (!email || !password) {
       setError('Please fill in all fields.');
@@ -33,8 +33,19 @@ const Login = ({ onAuth }) => {
         throw new Error(data.error || 'Login failed');
       }
 
-      onAuth();
+      // Store the token in localStorage
+      localStorage.setItem('token', data.token);
+      
+      // Call onAuth with user data
+      onAuth(data.user);
+      
+      // Navigate to dashboard
       navigate("/dashboard");
+      
+      // Reset form fields
+      setEmail('');
+      setPassword('');
+      setError('');
     } catch (err) {
       setError(err.message);
       console.error('Login error:', err);
@@ -62,14 +73,26 @@ const Login = ({ onAuth }) => {
           {error && <div className={styles.error}>{error}</div>}
           
           <div className={styles["form-group"]}>
-            <label>Email</label>
-            <input type="email" name="email" required />
-          </div>
+  <input 
+    type="email" 
+    name="email" 
+    placeholder="Email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    required 
+  />
+</div>
 
-          <div className={styles["form-group"]}>
-            <label>Password</label>
-            <input type="password" name="password" required />
-          </div>
+<div className={styles["form-group"]}>
+  <input 
+    type="password" 
+    name="password" 
+    placeholder="Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required 
+  />
+</div>
 
           <button type="submit" className={styles["signup-btn"]}>Login</button>
         </form>
