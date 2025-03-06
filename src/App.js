@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";  // Updated to include useEffect
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import LandingPage from "./LandingPage";
 import SignUp from "./SignUp";
@@ -7,11 +7,29 @@ import Dashboard from "./Dashboard";
 import styles from "./App.module.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
 
-  const handleAuth = () => setIsAuthenticated(true);
-  const handleLogout = () => setIsAuthenticated(false);
+  // Check for existing token on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // You could add an API call here to verify the token and get user data
+      // For now, we'll just set a minimal user object
+      setUser({ authenticated: true });
+    }
+  }, []);
+
+  const handleAuth = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+
+  const isAuthenticated = !!user; // Convert user to boolean for your original logic
 
   return (
     <>
